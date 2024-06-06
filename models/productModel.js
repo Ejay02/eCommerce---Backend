@@ -23,15 +23,11 @@ var productSchema = new mongoose.Schema(
       required: true,
     },
     category: {
-      // type: mongoose.Schema.Types.ObjectId,
-      // ref: "Category",
-
       type: String,
       required: true,
     },
     brand: {
       type: String,
-      // enum: ["Apple", "Samsung", "Google Pixel"],
       required: true,
     },
     quantity: {
@@ -45,6 +41,14 @@ var productSchema = new mongoose.Schema(
     images: {
       type: Array,
     },
+    // images: [
+    //   {
+    //     public_id: String,
+    //     url: String,
+    //   },
+    // ],
+    // color: [],
+    // tags: String,
     color: {
       type: String,
       required: true,
@@ -53,12 +57,18 @@ var productSchema = new mongoose.Schema(
     ratings: [
       {
         star: Number,
+        comment: String,
         postedby: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
       },
     ],
+    totalrating: {
+      type: String,
+      default: 0,
+    },
   },
-  { timestamp: true }
+  { timestamps: true }
 );
 
-//Export the model
+
+
 module.exports = mongoose.model("Product", productSchema);

@@ -28,16 +28,59 @@ const getProduct = asyncHandler(async (req, res) => {
 
 const getProducts = asyncHandler(async (req, res) => {
   try {
-    const queryObj = { ...req.query };
-    console.log("queryObj:", queryObj);
-    const allProducts = await Product.where("category").equals(
-      req.query.category
-    );
-    // const allProducts = await Product.find({
-    //   brand: req.query.brand,
-    //   category: req.query.category,
+    let query = Product.find();
 
-    // });
+    // Filter
+    if (req.query.category) {
+      query = query.find({ category: req.query.category });
+    }
+
+    if (req.query.price) {
+      const priceQuery = {};
+      if (req.query.price.gte) {
+        priceQuery.price = { $gte: req.query.price.gte };
+      }
+      if (req.query.price.lte) {
+        priceQuery.price = { $lte: req.query.price.lte };
+      }
+      if (req.query.price.gt) {
+        priceQuery.price = { $gt: req.query.price.gt };
+      }
+      if (req.query.price.lt) {
+        priceQuery.price = { $lt: req.query.price.lt };
+      }
+      query = query.find(priceQuery);
+    }
+
+    // Sorting
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(" ");
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort("-createdAt");
+    }
+
+    // Limiting the fields
+    if (req.query.fields) {
+      const fields = req.query.fields.split(",").join(" ");
+      query = query.select(fields);
+    } else {
+      query = query.select("-__v");
+    }
+
+    // Pagination
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 10;
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+    if (req.query.page) {
+      const numProducts = await Product.countDocuments();
+      if (skip >= numProducts) throw new Error("This page does not exist");
+    }
+
+    const allProducts = await query;
     res.json(allProducts);
   } catch (error) {
     throw new Error(error);
