@@ -15,10 +15,10 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
         next();
       }
     } catch (error) {
-      throw new Error("Invalid Authorization token, please login again", error);
+      throw new Error("Invalid Authorization token, please login again.", error);
     }
   } else {
-    throw new Error("Unidentified authorization");
+    throw new Error("Empty authorization header, please login again.");
   }
 });
 
@@ -27,7 +27,7 @@ const admin = asyncHandler(async (req, res, next) => {
   const adm = await User.findOne({ email });
 
   if (adm.role !== "admin") {
-    throw new Error("Unauthorized access ");
+    throw new Error("Insufficient permissions");
   } else {
     next;
   }
