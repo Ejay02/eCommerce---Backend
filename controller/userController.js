@@ -231,7 +231,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
     const resetURL = `Hi ${req.body.firstname},  <br><br>
     We have received a password reset for your Account. <br><br>
     If you initiated this request, please follow the instructions below to reset your password: <br><br>
-    To reset your password, click this <a href='http://localhost:4000/api/user/reset-password/${token}'>link</a>
+    To reset your password, click this <a href='http://localhost:4000/user/reset-password/${token}'>link</a>
     <br><br>
 
     If you did not initiate this, please disregard this email and your password will remain unchanged.
@@ -245,7 +245,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
     `;
 
     const data = {
-      to:email,
+      to: email,
       text: "Hi there!",
       subject: "Password Reset",
       html: resetURL,
@@ -287,12 +287,12 @@ module.exports = {
   getUser,
   getUsers,
   blockUser,
-  createUser,
-  updateUser,
   deleteUser,
+  updateUser,
+  createUser,
   unblockUser,
   resetPassword,
-  forgotPassword,
   updatePassword,
+  forgotPassword,
   handleRefreshToken,
 };
