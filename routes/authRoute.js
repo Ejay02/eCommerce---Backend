@@ -20,7 +20,7 @@ const { authMiddleware, admin } = require("../middlewares/authMiddleware");
 
 router.post("/register", createUser);
 router.post("/forgot-password", forgotPassword);
-router.put("/password-reset/:token", resetPassword);
+router.put("/reset-password/:token", resetPassword);
 
 
 router.put("/change-password", authMiddleware, updatePassword);
