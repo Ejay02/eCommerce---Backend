@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Product = require("../models/productModel");
 const slugify = require("slugify");
+const validateMongoDbId = require("../utils/validateMongodbId");
 
 const createProduct = asyncHandler(async (req, res) => {
   try {
@@ -11,18 +12,25 @@ const createProduct = asyncHandler(async (req, res) => {
 
     res.json(newProduct);
   } catch (error) {
-    throw new Error(error);
+    res.status(500).json({
+      status: "error",
+      message: "Error creating product",
+    });
   }
 });
 
 const getProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongoDbId(id);
 
   try {
     const product = await Product.findById(id);
     res.json(product);
   } catch (error) {
-    throw new Error(error);
+    res.status(500).json({
+      status: "error",
+      message: "Error getting product",
+    });
   }
 });
 
@@ -83,13 +91,17 @@ const getProducts = asyncHandler(async (req, res) => {
     const allProducts = await query;
     res.json(allProducts);
   } catch (error) {
-    throw new Error(error);
+    res.status(500).json({
+      status: "error",
+      message: "Error getting products",
+    });
   }
 });
 
 const updateProduct = asyncHandler(async (req, res) => {
   const id = req.params.id;
-  console.log("id:", id);
+  validateMongoDbId(id);
+
   try {
     if (req.body.title) {
       req.body.slug = slugify(req.body.title);
@@ -100,18 +112,25 @@ const updateProduct = asyncHandler(async (req, res) => {
     });
     res.json(update);
   } catch (error) {
-    throw new Error(error);
+    res.status(500).json({
+      status: "error",
+      message: "Error updating product: " + error.message,
+    });
   }
 });
 
 const deleteProduct = asyncHandler(async (req, res) => {
   const id = req.params.id;
+  validateMongoDbId(id);
 
   try {
     const del = await Product.findByIdAndDelete({ _id: id });
     res.json(del);
   } catch (error) {
-    throw new Error(error);
+    res.status(500).json({
+      status: "error",
+      message: "Error deleting product: " + error.message,
+    });
   }
 });
 
