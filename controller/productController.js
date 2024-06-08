@@ -1,7 +1,7 @@
-const asyncHandler = require("express-async-handler");
-const Product = require("../models/productModel");
-const slugify = require("slugify");
-const validateMongoDbId = require("../utils/validateMongodbId");
+const asyncHandler = require('express-async-handler');
+const Product = require('../models/productModel');
+const slugify = require('slugify');
+const validateMongoDbId = require('../utils/validateMongodbId');
 
 const createProduct = asyncHandler(async (req, res) => {
   try {
@@ -13,8 +13,8 @@ const createProduct = asyncHandler(async (req, res) => {
     res.json(newProduct);
   } catch (error) {
     res.status(500).json({
-      status: "error",
-      message: "Error creating product",
+      status: 'error',
+      message: 'Error creating product'
     });
   }
 });
@@ -28,8 +28,8 @@ const getProduct = asyncHandler(async (req, res) => {
     res.json(product);
   } catch (error) {
     res.status(500).json({
-      status: "error",
-      message: "Error getting product",
+      status: 'error',
+      message: 'Error getting product'
     });
   }
 });
@@ -62,18 +62,18 @@ const getProducts = asyncHandler(async (req, res) => {
 
     // Sorting
     if (req.query.sort) {
-      const sortBy = req.query.sort.split(",").join(" ");
+      const sortBy = req.query.sort.split(',').join(' ');
       query = query.sort(sortBy);
     } else {
-      query = query.sort("-createdAt");
+      query = query.sort('-createdAt');
     }
 
     // Limiting the fields
     if (req.query.fields) {
-      const fields = req.query.fields.split(",").join(" ");
+      const fields = req.query.fields.split(',').join(' ');
       query = query.select(fields);
     } else {
-      query = query.select("-__v");
+      query = query.select('-__v');
     }
 
     // Pagination
@@ -85,15 +85,15 @@ const getProducts = asyncHandler(async (req, res) => {
 
     if (req.query.page) {
       const numProducts = await Product.countDocuments();
-      if (skip >= numProducts) throw new Error("This page does not exist");
+      if (skip >= numProducts) throw new Error('This page does not exist');
     }
 
     const allProducts = await query;
     res.json(allProducts);
   } catch (error) {
     res.status(500).json({
-      status: "error",
-      message: "Error getting products",
+      status: 'error',
+      message: 'Error getting products'
     });
   }
 });
@@ -108,13 +108,13 @@ const updateProduct = asyncHandler(async (req, res) => {
     }
 
     const update = await Product.findOneAndUpdate({ _id: id }, req.body, {
-      new: true,
+      new: true
     });
     res.json(update);
   } catch (error) {
     res.status(500).json({
-      status: "error",
-      message: "Error updating product: " + error.message,
+      status: 'error',
+      message: 'Error updating product: ' + error.message
     });
   }
 });
@@ -128,8 +128,8 @@ const deleteProduct = asyncHandler(async (req, res) => {
     res.json(del);
   } catch (error) {
     res.status(500).json({
-      status: "error",
-      message: "Error deleting product: " + error.message,
+      status: 'error',
+      message: 'Error deleting product: ' + error.message
     });
   }
 });
@@ -139,5 +139,5 @@ module.exports = {
   getProduct,
   getProducts,
   updateProduct,
-  deleteProduct,
+  deleteProduct
 };

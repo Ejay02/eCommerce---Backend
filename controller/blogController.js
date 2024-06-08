@@ -1,7 +1,7 @@
-const Blog = require("../models/blogModel");
-const User = require("../models/userModel");
-const asyncHandler = require("express-async-handler");
-const validateMongoDbId = require("../utils/validateMongodbId");
+const Blog = require('../models/blogModel');
+const User = require('../models/userModel');
+const asyncHandler = require('express-async-handler');
+const validateMongoDbId = require('../utils/validateMongodbId');
 
 const createBlog = asyncHandler(async (req, res) => {
   try {
@@ -10,8 +10,8 @@ const createBlog = asyncHandler(async (req, res) => {
     res.json(newBlog);
   } catch (error) {
     res.status(500).json({
-      status: "error",
-      message: "Error creating blog",
+      status: 'error',
+      message: 'Error creating blog'
     });
   }
 });
@@ -22,13 +22,13 @@ const updateBlog = asyncHandler(async (req, res) => {
 
   try {
     const updateBlog = await Blog.findByIdAndUpdate(id, req.body, {
-      new: true,
+      new: true
     });
     res.json(updateBlog);
   } catch (error) {
     res.status(500).json({
-      status: "error",
-      message: "Error updating blog",
+      status: 'error',
+      message: 'Error updating blog'
     });
   }
 });
@@ -38,22 +38,22 @@ const getBlog = asyncHandler(async (req, res) => {
   validateMongoDbId(id);
 
   try {
-    const blog = await Blog.findById(id).populate("likes").populate("dislikes");
+    const blog = await Blog.findById(id).populate('likes').populate('dislikes');
 
     const updateViews = await Blog.findByIdAndUpdate(
       id,
       {
-        $inc: { numViews: 1 },
+        $inc: { numViews: 1 }
       },
       {
-        new: true,
+        new: true
       }
     );
     res.json(blog);
   } catch (error) {
     res.status(500).json({
-      status: "error",
-      message: "Error getting blog",
+      status: 'error',
+      message: 'Error getting blog'
     });
   }
 });
@@ -65,8 +65,8 @@ const getBlogs = asyncHandler(async (req, res) => {
     res.json(blogs);
   } catch (error) {
     res.status(500).json({
-      status: "error",
-      message: "Error getting blogs",
+      status: 'error',
+      message: 'Error getting blogs'
     });
   }
 });
@@ -80,8 +80,8 @@ const deleteBlog = asyncHandler(async (req, res) => {
     res.json(deleteBlog);
   } catch (error) {
     res.status(500).json({
-      status: "error",
-      message: "Error deleting blog",
+      status: 'error',
+      message: 'Error deleting blog'
     });
   }
 });
@@ -106,7 +106,7 @@ const likeBlog = asyncHandler(async (req, res) => {
         blogId,
         {
           $pull: { dislikes: curUserId },
-          disliked: false,
+          disliked: false
         },
         { new: true }
       );
@@ -118,7 +118,7 @@ const likeBlog = asyncHandler(async (req, res) => {
         blogId,
         {
           $pull: { likes: curUserId },
-          liked: false,
+          liked: false
         },
         { new: true }
       );
@@ -128,7 +128,7 @@ const likeBlog = asyncHandler(async (req, res) => {
         blogId,
         {
           $push: { likes: curUserId },
-          liked: true,
+          liked: true
         },
         { new: true }
       );
@@ -136,8 +136,8 @@ const likeBlog = asyncHandler(async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      status: "error",
-      message: "Error liking blog",
+      status: 'error',
+      message: 'Error liking blog'
     });
   }
 });
@@ -162,7 +162,7 @@ const dislikeBlog = asyncHandler(async (req, res) => {
         blogId,
         {
           $pull: { likes: curUserId },
-          liked: false,
+          liked: false
         },
         { new: true }
       );
@@ -174,7 +174,7 @@ const dislikeBlog = asyncHandler(async (req, res) => {
         blogId,
         {
           $pull: { dislikes: curUserId },
-          disliked: false,
+          disliked: false
         },
         { new: true }
       );
@@ -184,7 +184,7 @@ const dislikeBlog = asyncHandler(async (req, res) => {
         blogId,
         {
           $push: { dislikes: curUserId },
-          disliked: true,
+          disliked: true
         },
         { new: true }
       );
@@ -192,8 +192,8 @@ const dislikeBlog = asyncHandler(async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      status: "error",
-      message: "Error liking blog",
+      status: 'error',
+      message: 'Error liking blog'
     });
   }
 });
@@ -205,5 +205,5 @@ module.exports = {
   getBlogs,
   deleteBlog,
   likeBlog,
-  dislikeBlog,
+  dislikeBlog
 };

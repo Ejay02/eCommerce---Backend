@@ -1,6 +1,6 @@
-const asyncHandler = require("express-async-handler");
-const Brand = require("../models/brandModel");
-const validateMongoDbId = require("../utils/validateMongodbId");
+const asyncHandler = require('express-async-handler');
+const Brand = require('../models/brandModel');
+const validateMongoDbId = require('../utils/validateMongodbId');
 
 const createBrand = asyncHandler(async (req, res) => {
   try {
@@ -9,8 +9,8 @@ const createBrand = asyncHandler(async (req, res) => {
     res.json(newBrand);
   } catch (error) {
     res.status(500).json({
-      status: "error",
-      message: "Error creating product brand: " + error.message,
+      status: 'error',
+      message: 'Error creating product brand: ' + error.message
     });
   }
 });
@@ -21,14 +21,14 @@ const updateBrand = asyncHandler(async (req, res) => {
 
   try {
     const updatedBrand = await Brand.findByIdAndUpdate(id, req.body, {
-      new: true,
+      new: true
     });
 
     res.json(updatedBrand);
   } catch (error) {
     res.status(500).json({
-      status: "error",
-      message: "Error updating product brand: " + error.message,
+      status: 'error',
+      message: 'Error updating product brand: ' + error.message
     });
   }
 });
@@ -43,8 +43,8 @@ const deleteBrand = asyncHandler(async (req, res) => {
     res.json(delBrand);
   } catch (error) {
     res.status(500).json({
-      status: "error",
-      message: "Error deleting product brand: " + error.message,
+      status: 'error',
+      message: 'Error deleting product brand: ' + error.message
     });
   }
 });
@@ -59,8 +59,8 @@ const getBrand = asyncHandler(async (req, res) => {
     res.json(brand);
   } catch (error) {
     res.status(500).json({
-      status: "error",
-      message: "Error getting brand: " + error.message,
+      status: 'error',
+      message: 'Error getting brand: ' + error.message
     });
   }
 });
@@ -69,13 +69,11 @@ const getBrands = asyncHandler(async (req, res) => {
   try {
     const brands = await Brand.find();
 
-    console.log(brands)
-
     res.json(brands);
   } catch (error) {
     res.status(500).json({
-      status: "error",
-      message: "Error getting brands: " + error.message,
+      status: 'error',
+      message: 'Error getting brands: ' + error.message
     });
   }
 });
@@ -85,5 +83,5 @@ module.exports = {
   getBrands,
   createBrand,
   updateBrand,
-  deleteBrand,
+  deleteBrand
 };

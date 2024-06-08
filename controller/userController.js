@@ -1,11 +1,11 @@
-const { generateToken } = require("../config/jwtToken");
-const User = require("../models/userModel");
-const asyncHandler = require("express-async-handler");
-const validateMongoDbId = require("../utils/validateMongodbId");
-const { generateRefreshToken } = require("../config/refreshToken");
-const jwt = require("jsonwebtoken");
-const sendEmail = require("./emailController");
-const crypto = require("crypto");
+const { generateToken } = require('../config/jwtToken');
+const User = require('../models/userModel');
+const asyncHandler = require('express-async-handler');
+const validateMongoDbId = require('../utils/validateMongodbId');
+const { generateRefreshToken } = require('../config/refreshToken');
+const jwt = require('jsonwebtoken');
+const sendEmail = require('./emailController');
+const crypto = require('crypto');
 
 const createUser = asyncHandler(async (req, res) => {
   const email = req.body.email;
@@ -18,9 +18,7 @@ const createUser = asyncHandler(async (req, res) => {
     res.json(newUser);
   } else {
     //existing user
-    throw new Error(
-      `User ${req.body.firstname}  ${req.body.lastname} already exists`
-    );
+    throw new Error(`User ${req.body.firstname}  ${req.body.lastname} already exists`);
   }
 });
 
@@ -34,13 +32,13 @@ const login = asyncHandler(async (req, res) => {
     const updateUser = await User.findByIdAndUpdate(
       findUser?.id,
       {
-        refreshToken: refreshToken,
+        refreshToken: refreshToken
       },
       { new: true }
     );
-    res.cookie("refreshToken", refreshToken, {
+    res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      maxAge: 168 * 60 * 60 * 1000,
+      maxAge: 168 * 60 * 60 * 1000
     });
     res.json({
       id: findUser?._id,
@@ -48,25 +46,24 @@ const login = asyncHandler(async (req, res) => {
       lastname: findUser?.lastname,
       email: findUser?.email,
       mobile: findUser?.mobile,
-      token: generateToken(findUser?._id),
+      token: generateToken(findUser?._id)
     });
   } else {
-    throw new Error("Invalid Credentials");
+    throw new Error('Invalid Credentials');
   }
 });
 
 const handleRefreshToken = asyncHandler(async (req, res) => {
   const cookie = req.cookies;
-  if (!cookie?.refreshToken)
-    throw new Error("No refresh token provided in cookies");
+  if (!cookie?.refreshToken) throw new Error('No refresh token provided in cookies');
 
   const refreshToken = cookie.refreshToken;
   const user = await User.findOne({ refreshToken });
-  if (!user) throw new Error("No refresh token present for user");
+  if (!user) throw new Error('No refresh token present for user');
 
   jwt.verify(refreshToken, process.env.JWT_SECRET, (err, decoded) => {
     if (err || user?.id !== decoded.id) {
-      throw new Error("Refresh token error");
+      throw new Error('Refresh token error');
     }
 
     const accessToken = generateToken(user?._id);
@@ -76,28 +73,27 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
 
 const logout = asyncHandler(async (req, res) => {
   const cookie = req.cookies;
-  if (!cookie?.refreshToken)
-    throw new Error("No refresh token provided in cookies");
+  if (!cookie?.refreshToken) throw new Error('No refresh token provided in cookies');
 
   const refreshToken = cookie.refreshToken;
 
   const user = await User.findOne({ refreshToken });
 
   if (!user) {
-    res.clearCookie("refreshToken", {
+    res.clearCookie('refreshToken', {
       httpOnly: true,
-      secure: true,
+      secure: true
     });
     return res.sendStatus(204); // No Content
   }
 
   await User.findOneAndUpdate(
     { refreshToken: refreshToken }, // Use an object with the refreshToken property
-    { refreshToken: "" } // Update the refreshToken field to an empty string
+    { refreshToken: '' } // Update the refreshToken field to an empty string
   );
-  res.clearCookie("refreshToken", {
+  res.clearCookie('refreshToken', {
     httpOnly: true,
-    secure: true,
+    secure: true
   });
   res.sendStatus(204);
 });
@@ -134,11 +130,11 @@ const updateUser = asyncHandler(async (req, res) => {
         firstname: req?.body.firstname,
         lastname: req?.body.lastname,
         email: req?.body.email,
-        mobile: req?.body.mobile,
+        mobile: req?.body.mobile
         // role: req?.body.role,
       },
       {
-        new: true,
+        new: true
       }
     );
     res.json(user);
@@ -166,10 +162,10 @@ const blockUser = asyncHandler(async (req, res) => {
     const block = await User.findByIdAndUpdate(
       id,
       {
-        blocked: true,
+        blocked: true
       },
       {
-        new: true,
+        new: true
       }
     );
     res.json(block);
@@ -186,10 +182,10 @@ const unblockUser = asyncHandler(async (req, res) => {
     const unblock = await User.findByIdAndUpdate(
       id,
       {
-        blocked: false,
+        blocked: false
       },
       {
-        new: true,
+        new: true
       }
     );
     res.json(unblock);
@@ -246,9 +242,9 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
     const data = {
       to: email,
-      text: "Hi there!",
-      subject: "Password Reset",
-      html: resetURL,
+      text: 'Hi there!',
+      subject: 'Password Reset',
+      html: resetURL
     };
     sendEmail(data);
 
@@ -263,14 +259,14 @@ const resetPassword = asyncHandler(async (req, res) => {
 
   const { token } = req.params;
 
-  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
   const user = await User.findOne({
     passwordResetToken: hashedToken,
-    passwordResetExpires: { $gt: Date.now() },
+    passwordResetExpires: { $gt: Date.now() }
   });
 
-  if (!user) throw new Error("Expired token, please try again later");
+  if (!user) throw new Error('Expired token, please try again later');
 
   user.password = password;
 
@@ -294,5 +290,5 @@ module.exports = {
   resetPassword,
   updatePassword,
   forgotPassword,
-  handleRefreshToken,
+  handleRefreshToken
 };
