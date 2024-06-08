@@ -69,6 +69,8 @@ const getBrands = asyncHandler(async (req, res) => {
   try {
     const brands = await Brand.find();
 
+    console.log(brands)
+
     res.json(brands);
   } catch (error) {
     res.status(500).json({
