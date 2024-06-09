@@ -11,7 +11,7 @@ const createBlog = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error creating blog'
+      message: 'Error creating blog: ' + error.message
     });
   }
 });
@@ -28,7 +28,7 @@ const updateBlog = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error updating blog'
+      message: 'Error updating blog: ' + error.message
     });
   }
 });
@@ -53,7 +53,7 @@ const getBlog = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error getting blog'
+      message: 'Error getting blog: ' + error.message
     });
   }
 });
@@ -66,7 +66,7 @@ const getBlogs = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error getting blogs'
+      message: 'Error getting blogs: ' + error.message
     });
   }
 });
@@ -81,7 +81,7 @@ const deleteBlog = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error deleting blog'
+      message: 'Error deleting blog: ' + error.message
     });
   }
 });
@@ -137,7 +137,7 @@ const likeBlog = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error liking blog'
+      message: 'Error liking blog: ' + error.message
     });
   }
 });
@@ -193,7 +193,7 @@ const dislikeBlog = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error liking blog'
+      message: 'Error disliking blog: ' + error.message
     });
   }
 });

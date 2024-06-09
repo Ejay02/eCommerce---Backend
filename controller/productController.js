@@ -14,7 +14,7 @@ const createProduct = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error creating product'
+      message: 'Error creating product: ' + error.message
     });
   }
 });
@@ -29,7 +29,7 @@ const getProduct = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error getting product'
+      message: 'Error getting product: ' + error.message
     });
   }
 });
@@ -93,7 +93,7 @@ const getProducts = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error getting products'
+      message: 'Error getting products: ' + error.message
     });
   }
 });
