@@ -60,7 +60,7 @@ const getBrand = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error getting brand: ' + error.message
+      message: 'Error fetching brand: ' + error.message
     });
   }
 });
@@ -73,7 +73,7 @@ const getBrands = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error getting brands: ' + error.message
+      message: 'Error fetching brands: ' + error.message
     });
   }
 });

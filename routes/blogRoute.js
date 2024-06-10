@@ -11,16 +11,15 @@ const {
   likeBlog,
   dislikeBlog
 } = require('../controller/blogController');
-const { errorHandler } = require('../middlewares/errorHandler');
 
-router.post('/', authMiddleware, admin, errorHandler, createBlog);
-router.put('/likes', authMiddleware, errorHandler, likeBlog);
-router.put('/dislikes', authMiddleware, errorHandler, dislikeBlog);
+router.post('/', authMiddleware, admin,  createBlog);
+router.put('/likes', authMiddleware,  likeBlog);
+router.put('/dislikes', authMiddleware,  dislikeBlog);
 
-router.put('/:id', authMiddleware, admin, errorHandler, updateBlog);
-router.get('/:id', errorHandler, getBlog);
-router.get('/', errorHandler, getBlogs);
+router.put('/:id', authMiddleware, admin,  updateBlog);
+router.get('/:id',  getBlog);
+router.get('/',  getBlogs);
 
-router.delete('/:id', authMiddleware, admin, errorHandler, deleteBlog);
+router.delete('/:id', authMiddleware, admin,  deleteBlog);
 
 module.exports = router;

@@ -10,16 +10,15 @@ const {
   rating
 } = require('../controller/productController');
 const { admin, authMiddleware } = require('../middlewares/authMiddleware');
-const { errorHandler } = require('../middlewares/errorHandler');
 
-router.post('/', authMiddleware, admin, errorHandler, createProduct);
-router.get('/:id', errorHandler, getProduct);
+router.post('/', authMiddleware, admin,  createProduct);
+router.get('/:id',  getProduct);
 
 router.put('/wishlist', authMiddleware, addToWishlist);
-router.put('/rating', authMiddleware, errorHandler, rating);
+router.put('/rating', authMiddleware,  rating);
 
-router.get('/', errorHandler, getProducts);
-router.put('/:id', authMiddleware, admin, errorHandler, updateProduct);
-router.delete('/:id', authMiddleware, admin, errorHandler, deleteProduct);
+router.get('/',  getProducts);
+router.put('/:id', authMiddleware, admin,  updateProduct);
+router.delete('/:id', authMiddleware, admin,  deleteProduct);
 
 module.exports = router;

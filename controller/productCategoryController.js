@@ -60,7 +60,7 @@ const getCategory = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error getting product category: ' + error.message
+      message: 'Error fetching product category: ' + error.message
     });
   }
 });
@@ -73,7 +73,7 @@ const getCategories = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error getting product category: ' + error.message
+      message: 'Error fetching product categories: ' + error.message
     });
   }
 });

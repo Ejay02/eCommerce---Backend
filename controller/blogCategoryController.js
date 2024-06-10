@@ -10,7 +10,7 @@ const createCategory = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error creating product category: ' + error.message
+      message: 'Error creating blog category: ' + error.message
     });
   }
 });
@@ -28,7 +28,7 @@ const updateCategory = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error updating product category: ' + error.message
+      message: 'Error updating blog category: ' + error.message
     });
   }
 });
@@ -44,7 +44,7 @@ const deleteCategory = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error deleting product category: ' + error.message
+      message: 'Error deleting blog category: ' + error.message
     });
   }
 });
@@ -60,7 +60,7 @@ const getCategory = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error getting product category: ' + error.message
+      message: 'Error fetching blog category: ' + error.message
     });
   }
 });
@@ -73,7 +73,7 @@ const getCategories = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error getting product category: ' + error.message
+      message: 'Error fetching blog categories: ' + error.message
     });
   }
 });

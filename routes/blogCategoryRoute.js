@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { admin, authMiddleware } = require('../middlewares/authMiddleware');
-const { errorHandler } = require('../middlewares/errorHandler');
 
 const {
   createCategory,
@@ -11,10 +10,10 @@ const {
   getCategories
 } = require('../controller/blogCategoryController');
 
-router.post('/', authMiddleware, admin, errorHandler, createCategory);
-router.put('/:id', authMiddleware, admin, errorHandler, updateCategory);
-router.delete('/:id', authMiddleware, admin, errorHandler, deleteCategory);
-router.get('/:id', errorHandler, getCategory);
-router.get('/', errorHandler, getCategories);
+router.post('/', authMiddleware, admin,  createCategory);
+router.put('/:id', authMiddleware, admin,  updateCategory);
+router.delete('/:id', authMiddleware, admin,  deleteCategory);
+router.get('/:id',  getCategory);
+router.get('/',  getCategories);
 
 module.exports = router;

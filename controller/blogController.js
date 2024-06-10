@@ -53,7 +53,7 @@ const getBlog = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error getting blog: ' + error.message
+      message: 'Error fetching blog: ' + error.message
     });
   }
 });
@@ -66,7 +66,7 @@ const getBlogs = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: 'Error getting blogs: ' + error.message
+      message: 'Error fetching blogs: ' + error.message
     });
   }
 });
