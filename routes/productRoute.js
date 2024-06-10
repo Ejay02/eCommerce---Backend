@@ -5,13 +5,19 @@ const {
   getProduct,
   getProducts,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  addToWishlist,
+  rating
 } = require('../controller/productController');
 const { admin, authMiddleware } = require('../middlewares/authMiddleware');
 const { errorHandler } = require('../middlewares/errorHandler');
 
 router.post('/', authMiddleware, admin, errorHandler, createProduct);
 router.get('/:id', errorHandler, getProduct);
+
+router.put('/wishlist', authMiddleware, addToWishlist);
+router.put('/rating', authMiddleware, errorHandler, rating);
+
 router.get('/', errorHandler, getProducts);
 router.put('/:id', authMiddleware, admin, errorHandler, updateProduct);
 router.delete('/:id', authMiddleware, admin, errorHandler, deleteProduct);
