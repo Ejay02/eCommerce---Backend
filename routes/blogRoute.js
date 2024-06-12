@@ -9,17 +9,30 @@ const {
   getBlogs,
   deleteBlog,
   likeBlog,
-  dislikeBlog
+  dislikeBlog,
+  uploadImages
 } = require('../controller/blogController');
+const { uploadBlogPhoto } = require('../middlewares/uploadImages');
 
-router.post('/', authMiddleware, admin,  createBlog);
-router.put('/likes', authMiddleware,  likeBlog);
-router.put('/dislikes', authMiddleware,  dislikeBlog);
+router.post('/', authMiddleware, admin, createBlog);
 
-router.put('/:id', authMiddleware, admin,  updateBlog);
-router.get('/:id',  getBlog);
-router.get('/',  getBlogs);
+router.put(
+  '/upload/:id',
+  authMiddleware,
+  admin,
 
-router.delete('/:id', authMiddleware, admin,  deleteBlog);
+  uploadBlogPhoto.array('images', 2),
+
+  uploadImages
+);
+
+router.put('/likes', authMiddleware, likeBlog);
+router.put('/dislikes', authMiddleware, dislikeBlog);
+
+router.put('/:id', authMiddleware, admin, updateBlog);
+router.get('/:id', getBlog);
+router.get('/', getBlogs);
+
+router.delete('/:id', authMiddleware, admin, deleteBlog);
 
 module.exports = router;

@@ -7,18 +7,31 @@ const {
   updateProduct,
   deleteProduct,
   addToWishlist,
-  rating
+  rating,
+  uploadImages
 } = require('../controller/productController');
 const { admin, authMiddleware } = require('../middlewares/authMiddleware');
+const { uploadProductPhoto } = require('../middlewares/uploadImages');
 
-router.post('/', authMiddleware, admin,  createProduct);
-router.get('/:id',  getProduct);
+router.post('/', authMiddleware, admin, createProduct);
+
+router.put(
+  '/upload/:id',
+  authMiddleware,
+  admin,
+
+  uploadProductPhoto.array('images', 10),
+
+  uploadImages
+);
+
+router.get('/:id', getProduct);
 
 router.put('/wishlist', authMiddleware, addToWishlist);
-router.put('/rating', authMiddleware,  rating);
+router.put('/rating', authMiddleware, rating);
 
-router.get('/',  getProducts);
-router.put('/:id', authMiddleware, admin,  updateProduct);
-router.delete('/:id', authMiddleware, admin,  deleteProduct);
+router.get('/', getProducts);
+router.put('/:id', authMiddleware, admin, updateProduct);
+router.delete('/:id', authMiddleware, admin, deleteProduct);
 
 module.exports = router;

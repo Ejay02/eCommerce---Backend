@@ -3,6 +3,7 @@ const Product = require('../models/productModel');
 const slugify = require('slugify');
 const validateMongoDbId = require('../utils/validateMongodbId');
 const User = require('../models/userModel');
+const { handleProdImgUpload } = require('../utils/cloudinary');
 
 const createProduct = asyncHandler(async (req, res) => {
   try {
@@ -234,10 +235,46 @@ const rating = asyncHandler(async (req, res) => {
   }
 });
 
+const uploadImages = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateMongoDbId(id);
+
+  try {
+    let images = req.body.images;
+
+    // Ensure images is an array
+    if (!Array.isArray(images)) {
+      if (images) {
+        images = [images];
+      } else {
+        images = [];
+      }
+    }
+
+    const uploadedImages = await Promise.all(images.map((image) => handleProdImgUpload(image)));
+
+    const findProduct = await Product.findByIdAndUpdate(
+      id,
+      {
+        images: uploadedImages
+      },
+      { new: true }
+    );
+
+    res.json(findProduct);
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: 'Error uploading product image(s): ' + error.message
+    });
+  }
+});
+
 module.exports = {
   rating,
   getProduct,
   getProducts,
+  uploadImages,
   addToWishlist,
   deleteProduct,
   createProduct,

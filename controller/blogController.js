@@ -2,6 +2,7 @@ const Blog = require('../models/blogModel');
 const User = require('../models/userModel');
 const asyncHandler = require('express-async-handler');
 const validateMongoDbId = require('../utils/validateMongodbId');
+const { handleBlogImgUpload } = require('../utils/cloudinary');
 
 const createBlog = asyncHandler(async (req, res) => {
   try {
@@ -198,12 +199,49 @@ const dislikeBlog = asyncHandler(async (req, res) => {
   }
 });
 
+const uploadImages = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateMongoDbId(id);
+
+  try {
+    let images = req.body.images;
+
+    // Ensure images is an array
+    if (!Array.isArray(images)) {
+      if (images) {
+        images = [images];
+      } else {
+        images = [];
+      }
+    }
+
+    const uploadedImages = await Promise.all(images.map((image) => handleBlogImgUpload(image)));
+
+    const findBlog = await Blog.findByIdAndUpdate(
+      id,
+      {
+        images: uploadedImages
+      },
+      {
+        new: true
+      }
+    );
+    res.json(findBlog);
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: 'Error uploading blog image(s): ' + error.message
+    });
+  }
+});
+
 module.exports = {
-  createBlog,
-  updateBlog,
   getBlog,
   getBlogs,
-  deleteBlog,
   likeBlog,
-  dislikeBlog
+  createBlog,
+  updateBlog,
+  deleteBlog,
+  dislikeBlog,
+  uploadImages
 };

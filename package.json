@@ -6,14 +6,16 @@
   "scripts": {
     "start": "node index.js",
     "server": "nodemon index.js",
-    "prepare": "husky install",
+    "prepare": "husky || true",
     "precommit": "prettier --write . && eslint ."
   },
   "author": "Ej",
   "license": "ISC",
   "dependencies": {
+    "@img/sharp-win32-x64": "^0.33.4",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
+    "cloudinary": "^2.2.0",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
@@ -21,11 +23,13 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.1",
     "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.13",
     "slugify": "^1.6.6"
   },
   "devDependencies": {
+    "@types/multer": "^1.4.11",
     "eslint": "^9.4.0",
     "eslint-plugin-browser": "^0.0.0",
     "husky": "^9.0.11",

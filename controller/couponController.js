@@ -78,20 +78,20 @@ async function _deleteExpiredCoupons() {
       const result = await Coupon.deleteMany({
         _id: { $in: expiredCoupons.map((coupon) => coupon._id) }
       });
-      res.status(500).json({
+      res.json({
         status: 'success',
         message: `Deleted ${result.deletedCount} expired coupons`
       });
     }
   } catch (error) {
-    res.status(500).json({
+    res.json({
       status: 'error',
       message: 'Error deleting expired coupons: ' + error.message
     });
   }
 }
 
-cron.schedule('*/2 * * * *', async () => {
+cron.schedule('0 0 */14 * *', async () => {
   await _deleteExpiredCoupons();
 });
 

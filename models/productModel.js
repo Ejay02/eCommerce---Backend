@@ -38,16 +38,8 @@ var productSchema = new mongoose.Schema(
       type: Number,
       default: 0
     },
-    images: {
-      type: Array
-    },
-    // images: [
-    //   {
-    //     public_id: String,
-    //     url: String,
-    //   },
-    // ],
-    // color: [],
+    images:[],
+
     // tags: String,
     color: {
       type: String,

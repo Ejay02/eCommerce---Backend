@@ -10,10 +10,10 @@ const {
   getCategories
 } = require('../controller/productCategoryController');
 
-router.post('/', authMiddleware, admin,  createCategory);
-router.put('/:id', authMiddleware, admin,  updateCategory);
-router.delete('/:id', authMiddleware, admin,  deleteCategory);
-router.get('/:id',  getCategory);
-router.get('/',  getCategories);
+router.post('/', authMiddleware, admin, createCategory);
+router.put('/:id', authMiddleware, admin, updateCategory);
+router.delete('/:id', authMiddleware, admin, deleteCategory);
+router.get('/:id', getCategory);
+router.get('/', getCategories);
 
 module.exports = router;
