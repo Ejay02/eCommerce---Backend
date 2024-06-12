@@ -20,9 +20,7 @@ router.put(
   '/upload/:id',
   authMiddleware,
   admin,
-
   uploadBlogPhoto.array('images', 2),
-
   uploadImages
 );
 
