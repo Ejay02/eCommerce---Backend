@@ -17,5 +17,4 @@ const errorHandler = (err, req, res, next) => {
 
 module.exports = { notFound, errorHandler };
 
-// This wasn't supposed to happen
-// Our engineers are working on it. How about a fresh start?
+

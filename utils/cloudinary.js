@@ -15,6 +15,7 @@ const handleImageUpload = async (file, folder) => {
       .upload(file, {
         public_id: `${Date.now()}-${file.original_filename}`,
         folder,
+        // moderation: 'duplicate:0.8',
         // Apply auto-crop transformation
         transformation: [
           {
@@ -22,23 +23,21 @@ const handleImageUpload = async (file, folder) => {
             gravity: 'auto',
             width: 500,
             height: 500
-          }
-        ],
-        // Apply optimize transformation
-        fetch_format: 'auto',
-        quality: 'auto'
+          },
+          { quality: 'auto' },
+          { fetch_format: 'auto' }
+        ]
       })
       .catch((error) => {
         console.log(error);
       });
 
-    return data;
+    return data.url;
   } catch (error) {
     console.log('Error uploading file to Cloudinary: ' + error.message);
     return null;
   }
 };
-
 
 const handleProdImgUpload = async (image) => {
   return handleImageUpload(image, 'buyzone/products');
