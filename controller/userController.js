@@ -1,5 +1,7 @@
 const { generateToken } = require('../config/jwtToken');
 const User = require('../models/userModel');
+const Cart = require('../models/cartModel');
+const Product = require('../models/productModel');
 const asyncHandler = require('express-async-handler');
 const validateMongoDbId = require('../utils/validateMongodbId');
 const { generateRefreshToken } = require('../config/refreshToken');
@@ -47,6 +49,39 @@ const login = asyncHandler(async (req, res) => {
       email: findUser?.email,
       mobile: findUser?.mobile,
       token: generateToken(findUser?._id)
+    });
+  } else {
+    throw new Error('Invalid Credentials');
+  }
+});
+
+const adminLogin = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  // check if user exists
+  const findAdmin = await User.findOne({ email });
+
+  if (findAdmin.role !== 'admin') throw new Error('Not Authorized');
+  if (findAdmin && (await findAdmin.isPasswordMatched(password))) {
+    const refreshToken = await generateRefreshToken(findAdmin?.id);
+
+    const updateUser = await User.findByIdAndUpdate(
+      findAdmin?.id,
+      {
+        refreshToken: refreshToken
+      },
+      { new: true }
+    );
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      maxAge: 168 * 60 * 60 * 1000
+    });
+    res.json({
+      id: findAdmin?._id,
+      firstname: findAdmin?.firstname,
+      lastname: findAdmin?.lastname,
+      email: findAdmin?.email,
+      mobile: findAdmin?.mobile,
+      token: generateToken(findAdmin?._id)
     });
   } else {
     throw new Error('Invalid Credentials');
@@ -277,18 +312,133 @@ const resetPassword = asyncHandler(async (req, res) => {
   res.json(user);
 });
 
+const getWishlist = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+
+  validateMongoDbId(_id);
+
+  try {
+    const findUser = await User.findById(_id).populate('wishlist');
+    res.json(findUser);
+  } catch (error) {
+    throw new Error(`Error getting wishlist: ${error.message}`);
+  }
+});
+
+const address = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+
+  validateMongoDbId(_id);
+  try {
+    const user = await User.findByIdAndUpdate(
+      _id,
+      {
+        address: req?.body.address
+      },
+      {
+        new: true
+      }
+    );
+    res.json(user);
+  } catch (error) {
+    throw new Error(`Error saving address: ${error.message}`);
+  }
+});
+
+const userCart = asyncHandler(async (req, res) => {
+  const { cart } = req.body;
+  const { _id } = req.user;
+  validateMongoDbId(_id);
+
+  try {
+    let products = [];
+    const user = await User.findById(_id);
+
+    // check if user already have products in cart
+    const x = await Cart.findOne({ orderBy: user._id });
+    if (x) {
+      products.remove();
+    }
+    for (let i = 0; i < cart.length; i++) {
+      let object = {};
+
+      object.product = cart[i]._id;
+
+      object.count = cart[i].count;
+
+      object.color = cart[i].color;
+
+      let getPrice = await Product.findById(cart[i]._id).select('price').exec();
+
+      object.price = getPrice.price;
+
+      products.push(object);
+    }
+
+    let cartTotal = 0;
+    for (let i = 0; i < products.length; i++) {
+      cartTotal = cartTotal + products[i].price * products[i].count;
+    }
+
+    let newCart = await new Cart({
+      products,
+      cartTotal,
+      orderBy: user?._id
+    }).save();
+    res.json(newCart);
+  } catch (error) {
+    throw new Error(`Error creating user cart: ${error.message}`);
+  }
+});
+
+const getUserCart = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  validateMongoDbId(_id);
+
+  try {
+    const cart = await Cart.findOne({ orderBy: _id }).populate(
+      'products.product'
+      // '_id title price totalAfterDiscount'
+    );
+
+    res.json(cart);
+  } catch (error) {
+    throw new Error(`Error fetching user cart: ${error.message}`);
+  }
+});
+
+const emptyCart = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  validateMongoDbId(_id);
+
+  try {
+    const user = await User.findOne({ _id });
+    const userCart = await Cart.findOneAndDelete({ orderBy: user?._id });
+
+    res.json(userCart);
+  } catch (error) {
+    throw new Error(`Error emptying cart: ${error.message}`);
+  }
+});
+
 module.exports = {
   login,
   logout,
   getUser,
+  address,
   getUsers,
+  userCart,
   blockUser,
-  deleteUser,
+  emptyCart,
   updateUser,
   createUser,
+  deleteUser,
+  adminLogin,
+  getWishlist,
+  getUserCart,
   unblockUser,
   resetPassword,
-  updatePassword,
   forgotPassword,
+  updatePassword,
   handleRefreshToken
 };
