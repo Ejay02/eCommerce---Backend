@@ -181,7 +181,7 @@ const rating = asyncHandler(async (req, res) => {
     let rated = product.ratings.find((userId) => userId.postedBy.toString() === _id.toString());
 
     if (rated) {
-      const updateRating = await Product.updateOne(
+      const _updateRating = await Product.updateOne(
         {
           ratings: { $elemMatch: rated }
         },
@@ -195,7 +195,7 @@ const rating = asyncHandler(async (req, res) => {
       );
       // res.json(updateRating);
     } else {
-      const rate = await Product.findByIdAndUpdate(
+      const _rate = await Product.findByIdAndUpdate(
         productId,
         {
           $push: {

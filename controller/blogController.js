@@ -41,7 +41,7 @@ const getBlog = asyncHandler(async (req, res) => {
   try {
     const blog = await Blog.findById(id).populate('likes').populate('dislikes');
 
-    const updateViews = await Blog.findByIdAndUpdate(
+    const _updateViews = await Blog.findByIdAndUpdate(
       id,
       {
         $inc: { numViews: 1 }

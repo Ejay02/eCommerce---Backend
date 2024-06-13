@@ -16,7 +16,7 @@ const sendEmail = asyncHandler(async (data, req, res) => {
   });
 
   async function main() {
-    const info = await transporter.sendMail({
+    const _info = await transporter.sendMail({
       from: '"BuyZone" <no-reply@noreply.com>',
       to: data.to,
       subject: data.subject,
