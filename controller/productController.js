@@ -3,7 +3,7 @@ const Product = require('../models/productModel');
 const slugify = require('slugify');
 const validateMongoDbId = require('../utils/validateMongodbId');
 const User = require('../models/userModel');
-const { handleProdImgUpload } = require('../utils/cloudinary');
+const { handleProdImgUpload, handleImageDelete } = require('../utils/cloudinary');
 
 const createProduct = asyncHandler(async (req, res) => {
   try {
@@ -270,10 +270,37 @@ const uploadImages = asyncHandler(async (req, res) => {
   }
 });
 
+const deleteImage = asyncHandler(async (req, res) => {
+  const { id, public_id } = req.params;
+  validateMongoDbId(id);
+
+  try {
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ status: 'error', message: 'Product not found' });
+    }
+
+    // Delete the image from Cloudinary
+    await handleImageDelete(public_id);
+
+    // Remove the image from the product's images array
+    product.images = product.images.filter((imageUrl) => !imageUrl.includes(public_id));
+    await product.save();
+
+    res.json({ status: 'success', message: 'Image deleted successfully' });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: 'Error deleting image: ' + error.message
+    });
+  }
+});
+
 module.exports = {
   rating,
   getProduct,
   getProducts,
+  deleteImage,
   uploadImages,
   addToWishlist,
   deleteProduct,

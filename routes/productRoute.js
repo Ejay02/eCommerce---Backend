@@ -8,7 +8,8 @@ const {
   deleteProduct,
   addToWishlist,
   rating,
-  uploadImages
+  uploadImages,
+  deleteImage
 } = require('../controller/productController');
 const { admin, authMiddleware } = require('../middlewares/authMiddleware');
 const { uploadProductPhoto } = require('../middlewares/uploadImages');
@@ -31,5 +32,6 @@ router.put('/rating', authMiddleware, rating);
 router.get('/', getProducts);
 router.put('/:id', authMiddleware, admin, updateProduct);
 router.delete('/:id', authMiddleware, admin, deleteProduct);
+router.delete('/:id/delete-image/:public_id', authMiddleware, admin, deleteImage);
 
 module.exports = router;

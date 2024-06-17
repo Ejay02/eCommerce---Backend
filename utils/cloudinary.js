@@ -11,9 +11,16 @@ cloudinary.config({
 
 const handleImageUpload = async (file, folder) => {
   try {
+    const options = {
+      use_filename: true,
+      unique_filename: false,
+      overwrite: true
+    };
+
     const data = await cloudinary.uploader
       .upload(file, {
-        public_id: `${Date.now()}-${file.original_filename}`,
+        public_id: file.public_id,
+        // public_id: `${Date.now()}-${file.original_filename}`,
         folder,
         // moderation: 'duplicate:0.8',
         // Apply auto-crop transformation
@@ -34,8 +41,7 @@ const handleImageUpload = async (file, folder) => {
 
     return data.url;
   } catch (error) {
-    console.log('Error uploading file to Cloudinary: ' + error.message);
-    return null;
+    throw new Error('Error uploading file to Cloudinary: ' + error.message);
   }
 };
 
@@ -47,4 +53,14 @@ const handleBlogImgUpload = async (file) => {
   return handleImageUpload(file, 'buyzone/blogs');
 };
 
-module.exports = { handleProdImgUpload, handleBlogImgUpload };
+const handleImageDelete = async (public_id) => {
+  try {
+    await cloudinary.uploader.destroy(public_id);
+
+    return true;
+  } catch (error) {
+    throw new Error(`Error deleting image with publicId ${public_id}: ${error.message}`);
+  }
+};
+
+module.exports = { handleProdImgUpload, handleBlogImgUpload, handleImageDelete };
