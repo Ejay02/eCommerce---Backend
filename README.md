@@ -9,9 +9,6 @@ BuyZone is an e-commerce website built with Node.js and Express. It provides a p
 - [Installation](#installation)
 - [Usage](#usage)
 - [API Documentation](#api-documentation)
-- [Scripts](#scripts)
-- [Dependencies](#dependencies)
-- [Dev Dependencies](#dev-dependencies)
 - [Author](#author)
 - [License](#license)
 
@@ -54,3 +51,11 @@ For detailed API documentation, visit the [Postman Documentation](https://docume
 ## Author
 
 Ej
+
+## License
+This project is licensed under the ISC License, a permissive free software license. It is functionally equivalent to the simplified BSD and MIT licenses.
+
+### ISC License
+The ISC License allows for free use, modification, and distribution of the software in open source and proprietary projects, with few restrictions.
+
+For more information, see the [ISC License](https://opensource.org/licenses/ISC).
