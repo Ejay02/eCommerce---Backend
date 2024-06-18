@@ -17,4 +17,3 @@ router.get('/:id', getEnquiry);
 router.get('/', getEnquires);
 
 module.exports = router;
-
