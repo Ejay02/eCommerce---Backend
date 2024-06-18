@@ -39,7 +39,12 @@ const handleImageUpload = async (file, folder) => {
         console.log(error);
       });
 
-    return data.url;
+    // return data.url;
+    return {
+      url: data.url,
+      asset_id: data.asset_id,
+      public_id: data.public_id
+    };
   } catch (error) {
     throw new Error('Error uploading file to Cloudinary: ' + error.message);
   }

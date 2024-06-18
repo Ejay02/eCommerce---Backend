@@ -272,6 +272,7 @@ const uploadImages = asyncHandler(async (req, res) => {
 
 const deleteImage = asyncHandler(async (req, res) => {
   const { id, public_id } = req.params;
+
   validateMongoDbId(id);
 
   try {
