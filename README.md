@@ -2,7 +2,7 @@
 
 ## Description
 
-BuyZone is an e-commerce website built with Node.js and Express. It provides a platform for users to browse and purchase products. The application includes features like user authentication, product management, and image uploads.
+BuyZone is an e-commerce website built for fun with Node.js and Express. It provides a platform for users to browse and purchase products. The application includes features like user authentication, product management, and image uploads etc.
 
 ## Table of Contents
 
