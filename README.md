@@ -2,7 +2,7 @@
 
 ## Description
 
-BuyZone is an e-commerce website built for fun with Node.js and Express. It provides a platform for users to browse and purchase products. The application includes features like user authentication, product management, image uploads, etc.
+BuyZone is an e-commerce website built for fun with Node.js and Express. It provides a platform for users to browse and purchase products. The application includes user authentication, product management, image uploads, etc.
 
 ## Table of Contents
 
@@ -63,7 +63,7 @@ Visit the BuyZone Admin Dashboard [here](https://buyzone-admin-dashboard.netlify
 We welcome contributions to BuyZone! To contribute, please follow these guidelines:
 - Fork the repository and create your branch from `dev`.
 - Make sure your code follows our coding standards and conventions.
-- Test your changes thoroughly.
+- Could you test your changes thoroughly?
 - Submit a pull request detailing the changes you've made.
 
 
