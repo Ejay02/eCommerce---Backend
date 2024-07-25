@@ -22,15 +22,19 @@ const cors = require('cors');
 
 dbConnect();
 
-const allowedOrigins = ['http://localhost:5173', 'https://ecommerce-backend-e8uw.onrender.com'];
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://ecommerce-backend-e8uw.onrender.com',
+  'https://buyzone-admin-dashboard.netlify.app',
+];
 
 const corsOptions = {
   origin: (origin, callback) => {
-    console.log('Origin:', origin); // Debug log
+    console.log('Origin:', origin); // Debug log origin being passed
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      console.log('Not allowed by CORS:', origin); // Debug log
+      console.log('Not allowed by CORS:', origin); // Debug log origins are blocked
       callback(new Error('Not allowed by CORS'));
     }
   },
