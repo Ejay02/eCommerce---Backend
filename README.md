@@ -61,16 +61,18 @@ Visit the BuyZone Admin Dashboard [here](https://buyzone-admin-dashboard.netlify
 ## Contribution Guidelines
 
 We welcome contributions to BuyZone! To contribute, please follow these guidelines:
+
 - Fork the repository and create your branch from `dev`.
 - Make sure your code follows our coding standards and conventions.
 - Could you test your changes thoroughly?
 - Submit a pull request detailing the changes you've made.
 
-
 ## License
+
 This project is licensed under the ISC License, a permissive free software license. It is functionally equivalent to the simplified BSD and MIT licenses.
 
 ### ISC License
+
 The ISC License allows for free use, modification, and distribution of the software in open source and proprietary projects, with few restrictions.
 
 For more information, see the [ISC License](https://opensource.org/licenses/ISC).
