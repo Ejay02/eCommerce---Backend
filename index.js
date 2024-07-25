@@ -25,7 +25,7 @@ dbConnect();
 const allowedOrigins = [
   'http://localhost:5173',
   'https://ecommerce-backend-e8uw.onrender.com',
-  'https://buyzone-admin-dashboard.netlify.app',
+  'https://buyzone-admin-dashboard.netlify.app'
 ];
 
 const corsOptions = {
