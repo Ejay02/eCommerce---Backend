@@ -54,7 +54,8 @@ const login = asyncHandler(async (req, res) => {
       token: generateToken(findUser?._id)
     });
   } else {
-    throw new Error('Invalid Credentials');
+    res.status(401); // Unauthorized
+    res.json({ message: 'Invalid credentials' });
   }
 });
 
@@ -138,7 +139,7 @@ const logout = asyncHandler(async (req, res) => {
 
 const getUsers = asyncHandler(async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find().sort({ createdAt: -1 });
     res.json(users);
   } catch (error) {
     throw new Error(error);
