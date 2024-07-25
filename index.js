@@ -26,11 +26,11 @@ const allowedOrigins = ['http://localhost:5173', 'https://ecommerce-backend-e8uw
 
 const corsOptions = {
   origin: (origin, callback) => {
-    console.log('Origin:', origin); // Add this line to see the origin being passed
+
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      console.log('Not allowed by CORS:', origin); // Add this line to see which origins are blocked
+
       callback(new Error('Not allowed by CORS'));
     }
   },
