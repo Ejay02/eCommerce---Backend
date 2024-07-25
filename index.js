@@ -22,18 +22,29 @@ const cors = require('cors');
 
 dbConnect();
 
-// myInSecurePassword
+const allowedOrigins = [
+  'http://localhost:5173', 
+  'https://ecommerce-backend-e8uw.onrender.com'];
 
-// CORS Configuration
 const corsOptions = {
-  origin: '*', // Allow requests from any origin
+  origin: (origin, callback) => {
+    console.log('Origin:', origin); // Add this line to see the origin being passed
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.log('Not allowed by CORS:', origin); // Add this line to see which origins are blocked
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Specify allowed methods
-  credentials: true // Allow credentials if needed (e.g., cookies)
+  credentials: true // Allow credentials (e.g., cookies)
 };
 
 app.use(morgan('dev'));
 // app.use(cors());
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Preflight requests handling
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
