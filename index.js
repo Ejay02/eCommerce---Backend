@@ -4,7 +4,6 @@ const express = require('express');
 const dbConnect = require('./config/dbConnect');
 const app = express();
 const dotenv = require('dotenv').config();
-const PORT = process.env.PORT || 2000;
 const authRoute = require('./routes/authRoute');
 const blogRoute = require('./routes/blogRoute');
 const productRoute = require('./routes/productRoute');
@@ -20,11 +19,12 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const cors = require('cors');
 
+const PORT = process.env.PORT || 2000;
+
 dbConnect();
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://ecommerce-backend-e8uw.onrender.com',
   'https://buyzone-admin-dashboard.netlify.app'
 ];
 
@@ -34,7 +34,7 @@ const corsOptions = {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      console.log('Not allowed by CORS:', origin); // Debug log origins are blocked
+      console.log('Not allowed by CORS:', origin); // Debug log origins that are blocked
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -42,15 +42,17 @@ const corsOptions = {
   credentials: true // Allow credentials (e.g., cookies)
 };
 
+// Middleware setup
 app.use(morgan('dev'));
-// app.use(cors());
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions)); // Preflight requests handling
 
+// Body parsers
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+// Routes setup
 app.use('/user', authRoute);
 app.use('/product', productRoute);
 app.use('/blog', blogRoute);
@@ -61,9 +63,11 @@ app.use('/coupon', couponRoute);
 app.use('/color', colorRoute);
 app.use('/enquiry', enquiryRoute);
 
+// Error handling middleware
 app.use(notFound);
 app.use(errorHandler);
 
+// Start server
 app.listen(PORT, () => {
   console.log(`🧙🏽‍♂️ listening at port ${PORT}`);
 });
