@@ -23,10 +23,7 @@ const PORT = process.env.PORT || 2000;
 
 dbConnect();
 
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://buyzone-admin-dashboard.netlify.app'
-];
+const allowedOrigins = ['http://localhost:5173', 'https://buyzone-admin-dashboard.netlify.app'];
 
 const corsOptions = {
   origin: (origin, callback) => {
