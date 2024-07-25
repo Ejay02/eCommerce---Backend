@@ -22,8 +22,18 @@ const cors = require('cors');
 
 dbConnect();
 
+// myInSecurePassword
+
+// CORS Configuration
+const corsOptions = {
+  origin: '*', // Allow requests from any origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Specify allowed methods
+  credentials: true // Allow credentials if needed (e.g., cookies)
+};
+
 app.use(morgan('dev'));
-app.use(cors());
+// app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
