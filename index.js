@@ -22,9 +22,7 @@ const cors = require('cors');
 
 dbConnect();
 
-const allowedOrigins = [
-  'http://localhost:5173', 
-  'https://ecommerce-backend-e8uw.onrender.com'];
+const allowedOrigins = ['http://localhost:5173', 'https://ecommerce-backend-e8uw.onrender.com'];
 
 const corsOptions = {
   origin: (origin, callback) => {
