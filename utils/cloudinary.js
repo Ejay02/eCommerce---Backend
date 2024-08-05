@@ -18,12 +18,9 @@ const handleImageUpload = async (file, folder) => {
     };
 
     const data = await cloudinary.uploader
-      .upload(file, {
-        public_id: file.public_id,
-        // public_id: `${Date.now()}-${file.original_filename}`,
+      .upload(file.path, {
+        public_id: `${Date.now()}-${file.originalname}`,
         folder,
-        // moderation: 'duplicate:0.8',
-        // Apply auto-crop transformation
         transformation: [
           {
             crop: 'auto',
@@ -39,7 +36,6 @@ const handleImageUpload = async (file, folder) => {
         console.log(error);
       });
 
-    // return data.url;
     return {
       url: data.url,
       asset_id: data.asset_id,

@@ -1,19 +1,52 @@
-const asyncHandler = require('express-async-handler');
-const Product = require('../models/productModel');
+const fs = require('fs');
 const slugify = require('slugify');
-const validateMongoDbId = require('../utils/validateMongodbId');
 const User = require('../models/userModel');
+const Product = require('../models/productModel');
+const asyncHandler = require('express-async-handler');
+const validateMongoDbId = require('../utils/validateMongodbId');
+
 const { handleProdImgUpload, handleImageDelete } = require('../utils/cloudinary');
 
 const createProduct = asyncHandler(async (req, res) => {
   try {
-    if (req.body.title) {
-      req.body.slug = slugify(req.body.title);
-    }
-    const newProduct = await Product.create(req.body);
+    let { title, ...otherProductData } = req.body;
 
+    // Create slug from title
+    if (title) {
+      otherProductData.slug = slugify(title);
+    }
+
+    // Handle image uploads
+    let uploadedImages = [];
+    if (req.files && req.files.length > 0) {
+      uploadedImages = await Promise.all(req.files.map((file) => handleProdImgUpload(file)));
+    }
+
+    // Create product with uploaded images
+    const newProduct = await Product.create({
+      title,
+      images: uploadedImages,
+      ...otherProductData
+    });
+
+    // Delete temporary files
+    if (req.files) {
+      req.files.forEach((file) => {
+        if (fs.existsSync(file.path)) {
+          fs.unlinkSync(file.path);
+        }
+      });
+    }
     res.json(newProduct);
   } catch (error) {
+    // Delete temporary files in case of error
+    if (req.files) {
+      req.files.forEach((file) => {
+        if (fs.existsSync(file.path)) {
+          fs.unlinkSync(file.path);
+        }
+      });
+    }
     res.status(500).json({
       status: 'error',
       message: 'Error creating product: ' + error.message

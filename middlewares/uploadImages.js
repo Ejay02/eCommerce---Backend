@@ -1,10 +1,13 @@
+const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
 
 const createMulterConfig = (destination) => {
   const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, path.join(__dirname, `../public/images/${destination}`));
+      const dir = path.join(__dirname, `../public/images/${destination}`);
+      fs.mkdirSync(dir, { recursive: true }); // Ensure directory exists
+      cb(null, dir);
     },
     filename: function (req, file, cb) {
       if (file) {

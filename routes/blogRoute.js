@@ -9,14 +9,16 @@ const {
   getBlogs,
   deleteBlog,
   likeBlog,
-  dislikeBlog,
-  uploadImages
+  dislikeBlog
+  // uploadImages
 } = require('../controller/blogController');
 const { uploadBlogPhoto } = require('../middlewares/uploadImages');
 
+// router.post('/', authMiddleware, admin, uploadBlogPhoto.single('image'), createBlog);
+
 router.post('/', authMiddleware, admin, createBlog);
 
-router.put('/upload/:id', authMiddleware, admin, uploadBlogPhoto.array('images', 2), uploadImages);
+// router.put('/upload/:id', authMiddleware, admin, uploadBlogPhoto.array('images', 2), uploadImages);
 
 router.put('/likes', authMiddleware, likeBlog);
 router.put('/dislikes', authMiddleware, dislikeBlog);

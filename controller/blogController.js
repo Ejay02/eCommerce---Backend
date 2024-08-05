@@ -1,12 +1,33 @@
 const Blog = require('../models/blogModel');
-const User = require('../models/userModel');
 const asyncHandler = require('express-async-handler');
 const validateMongoDbId = require('../utils/validateMongodbId');
 const { handleBlogImgUpload } = require('../utils/cloudinary');
 
+// const createBlog = asyncHandler(async (req, res) => {
+//   try {
+//     const newBlog = await Blog.create(req.body);
+
+//     res.json(newBlog);
+//   } catch (error) {
+//     res.status(500).json({
+//       status: 'error',
+//       message: 'Error creating blog: ' + error.message
+//     });
+//   }
+// });
+
 const createBlog = asyncHandler(async (req, res) => {
   try {
-    const newBlog = await Blog.create(req.body);
+    const { title, description, category, author, image } = req.body;
+    // let image = req.file ? req.file.buffer.toString('base64') : null;
+
+    const newBlog = await Blog.create({
+      title,
+      description,
+      category,
+      author,
+      image
+    });
 
     res.json(newBlog);
   } catch (error) {
@@ -61,7 +82,7 @@ const getBlog = asyncHandler(async (req, res) => {
 
 const getBlogs = asyncHandler(async (req, res) => {
   try {
-    const blogs = await Blog.find();
+    const blogs = await Blog.find().sort({ createdAt: -1 });
 
     res.json(blogs);
   } catch (error) {
