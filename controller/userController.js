@@ -139,10 +139,26 @@ const logout = asyncHandler(async (req, res) => {
 
 const getUsers = asyncHandler(async (req, res) => {
   try {
-    const users = await User.find().sort({ createdAt: -1 });
-    res.json(users);
+    // Pagination parameters
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
+
+    // Query for users with sorting and pagination
+    const usersQuery = User.find().sort({ createdAt: -1 }).skip(skip).limit(limit);
+
+    // Get the total count of users
+    const numUsers = await User.countDocuments();
+
+    // Check if page is out of range
+    if (skip >= numUsers && page !== 1) {
+      return res.status(404).json({ message: 'This page does not exist' });
+    }
+
+    const allUsers = await usersQuery;
+    res.json({ users: allUsers, total: numUsers, page, limit });
   } catch (error) {
-    throw new Error(error);
+    res.status(500).json({ message: 'Error fetching users: ' + error.message });
   }
 });
 

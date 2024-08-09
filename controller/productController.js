@@ -9,11 +9,53 @@ const { handleProdImgUpload, handleImageDelete } = require('../utils/cloudinary'
 
 const createProduct = asyncHandler(async (req, res) => {
   try {
-    let { title, ...otherProductData } = req.body;
+    let { title, tags, colors, ...otherProductData } = req.body;
 
     // Create slug from title
     if (title) {
       otherProductData.slug = slugify(title);
+    }
+
+    // Handle tags
+    if (tags) {
+      // If tags is a string, split it into an array
+      if (typeof tags === 'string') {
+        tags = tags.split(',').map((tag) => tag.trim());
+      }
+      // If tags is an array of strings (from FormData), convert it to a regular array
+      else if (Array.isArray(tags) && tags.every((tag) => typeof tag === 'string')) {
+        tags = tags.map((tag) => tag.trim());
+      }
+      // If tags is already an array, keep it as is
+      else if (!Array.isArray(tags)) {
+        tags = [];
+      }
+    } else {
+      tags = [];
+    }
+
+    //handle colors
+    if (colors) {
+      if (typeof colors === 'object' && colors !== null) {
+        // Check if colors is the object we're receiving
+        if ('' in colors && typeof colors[''] === 'string') {
+          // Use the string value if it exists
+          colors = colors[''].split(',').map((color) => color.trim());
+        } else {
+          // Otherwise, collect all non-empty string values
+          colors = Object.values(colors).filter(
+            (color) => typeof color === 'string' && color.trim() !== ''
+          );
+        }
+      } else if (typeof colors === 'string') {
+        colors = colors.split(',').map((color) => color.trim());
+      } else if (Array.isArray(colors)) {
+        colors = colors.filter((color) => typeof color === 'string' && color.trim() !== '');
+      } else {
+        colors = [];
+      }
+    } else {
+      colors = [];
     }
 
     // Handle image uploads
@@ -25,6 +67,8 @@ const createProduct = asyncHandler(async (req, res) => {
     // Create product with uploaded images
     const newProduct = await Product.create({
       title,
+      tags,
+      colors,
       images: uploadedImages,
       ...otherProductData
     });
@@ -73,6 +117,7 @@ const getProducts = asyncHandler(async (req, res) => {
   try {
     let query = Product.find();
 
+    // Apply filters, sorting, and field selection
     // Filter
     if (req.query.category) {
       query = query.find({ category: req.query.category });
@@ -118,13 +163,12 @@ const getProducts = asyncHandler(async (req, res) => {
 
     query = query.skip(skip).limit(limit);
 
-    if (req.query.page) {
-      const numProducts = await Product.countDocuments();
-      if (skip >= numProducts) throw new Error('This page does not exist');
-    }
+    // Get the total count of products
+    const numProducts = await Product.countDocuments();
+    if (skip >= numProducts && page !== 1) throw new Error('This page does not exist');
 
     const allProducts = await query;
-    res.json(allProducts);
+    res.json({ products: allProducts, total: numProducts, page, limit });
   } catch (error) {
     res.status(500).json({
       status: 'error',
@@ -138,15 +182,47 @@ const updateProduct = asyncHandler(async (req, res) => {
   validateMongoDbId(id);
 
   try {
-    if (req.body.title) {
-      req.body.slug = slugify(req.body.title);
+    let { title, ...otherProductData } = req.body;
+
+    if (title) {
+      otherProductData.slug = slugify(title);
     }
 
-    const update = await Product.findOneAndUpdate({ _id: id }, req.body, {
-      new: true
-    });
+    // Handle image uploads
+    let uploadedImages = [];
+    if (req.files && req.files.length > 0) {
+      uploadedImages = await Promise.all(req.files.map((file) => handleProdImgUpload(file)));
+
+      // Get the existing product to merge new images with existing ones
+      const existingProduct = await Product.findById(id);
+      otherProductData.images = [...existingProduct.images, ...uploadedImages];
+    }
+
+    const update = await Product.findOneAndUpdate(
+      { _id: id },
+      { title, ...otherProductData },
+      { new: true }
+    );
+
+    // Delete temporary files
+    if (req.files) {
+      req.files.forEach((file) => {
+        if (fs.existsSync(file.path)) {
+          fs.unlinkSync(file.path);
+        }
+      });
+    }
+
     res.json(update);
   } catch (error) {
+    // Delete temporary files in case of error
+    if (req.files) {
+      req.files.forEach((file) => {
+        if (fs.existsSync(file.path)) {
+          fs.unlinkSync(file.path);
+        }
+      });
+    }
     res.status(500).json({
       status: 'error',
       message: 'Error updating product: ' + error.message

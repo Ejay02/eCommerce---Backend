@@ -4,6 +4,16 @@ const validateMongoDbId = require('../utils/validateMongodbId');
 
 const createBrand = asyncHandler(async (req, res) => {
   try {
+    const { title } = req.body;
+    const existingBrand = await Brand.findOne({ title });
+
+    if (existingBrand) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Brand with this title already exists'
+      });
+    }
+
     const newBrand = await Brand.create(req.body);
 
     res.json(newBrand);
@@ -65,11 +75,27 @@ const getBrand = asyncHandler(async (req, res) => {
   }
 });
 
+
+
 const getBrands = asyncHandler(async (req, res) => {
   try {
-    const brands = await Brand.find();
+    let query = Brand.find();
 
-    res.json(brands);
+    // Pagination
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 10;
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+    // Get the total count of brands
+    const numBrands = await Brand.countDocuments();
+
+    // Check if page is out of range
+    if (skip >= numBrands && page !== 1) throw new Error('This page does not exist');
+
+    const allBrands = await query;
+    res.json({ brands: allBrands, total: numBrands, page, limit });
   } catch (error) {
     res.status(500).json({
       status: 'error',
@@ -77,6 +103,8 @@ const getBrands = asyncHandler(async (req, res) => {
     });
   }
 });
+
+
 
 module.exports = {
   getBrand,

@@ -30,8 +30,9 @@ router.put('/wishlist', authMiddleware, addToWishlist);
 router.put('/rating', authMiddleware, rating);
 
 router.get('/', getProducts);
-// router.put('/:id', authMiddleware, admin, updateProduct);
+
 router.put('/:id', authMiddleware, admin, uploadProductPhoto.array('images', 10), updateProduct);
+
 router.delete('/:id', authMiddleware, admin, deleteProduct);
 router.delete('/:id/delete-image/:public_id', authMiddleware, admin, deleteImage);
 

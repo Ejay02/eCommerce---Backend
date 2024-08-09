@@ -65,19 +65,6 @@ const getCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// const getCategories = asyncHandler(async (req, res) => {
-//   try {
-//     const categories = await BlogCategory.find();
-
-//     res.json(categories);
-//   } catch (error) {
-//     res.status(500).json({
-//       status: 'error',
-//       message: 'Error fetching blog categories: ' + error.message
-//     });
-//   }
-// });
-
 const getCategories = asyncHandler(async (req, res) => {
   try {
     // Fetch categories sorted by updatedAt in descending order
