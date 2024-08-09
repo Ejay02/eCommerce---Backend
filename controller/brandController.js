@@ -75,8 +75,6 @@ const getBrand = asyncHandler(async (req, res) => {
   }
 });
 
-
-
 const getBrands = asyncHandler(async (req, res) => {
   try {
     let query = Brand.find();
@@ -103,8 +101,6 @@ const getBrands = asyncHandler(async (req, res) => {
     });
   }
 });
-
-
 
 module.exports = {
   getBrand,
