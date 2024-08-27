@@ -21,22 +21,14 @@ const cors = require('cors');
 
 const PORT = process.env.PORT || 2000;
 
+require('./controller/couponController');
+
 dbConnect();
 
-const allowedOrigins = ['http://localhost:5173', 'https://buyzone-admin-dashboard.netlify.app'];
-
 const corsOptions = {
-  origin: (origin, callback) => {
-    console.log('Origin:', origin); // Debug log origin being passed
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.log('Not allowed by CORS:', origin); // Debug log origins that are blocked
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Specify allowed methods
-  credentials: true // Allow credentials (e.g., cookies)
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true
 };
 
 // Middleware setup

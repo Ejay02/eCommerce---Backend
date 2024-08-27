@@ -12,6 +12,28 @@ const sendEmail = require('./emailController');
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
 
+const generateUserResponse = async (user) => {
+  const token = generateToken(user._id);
+  const refreshToken = await generateRefreshToken(user._id);
+  await User.findByIdAndUpdate(user._id, { refreshToken });
+  return {
+    id: user._id,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    email: user.email,
+    mobile: user.mobile,
+    token,
+    refreshToken
+  };
+};
+
+const setRefreshTokenCookie = (res, refreshToken) => {
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    maxAge: 168 * 60 * 60 * 1000
+  });
+};
+
 const createUser = asyncHandler(async (req, res) => {
   const email = req.body.email;
 
@@ -20,6 +42,9 @@ const createUser = asyncHandler(async (req, res) => {
   if (!findUser) {
     //create a new user
     const newUser = await User.create(req.body);
+    const userData = await generateUserResponse(newUser);
+    setRefreshTokenCookie(res, userData.refreshToken);
+    res.json(userData);
     res.json(newUser);
   } else {
     //existing user
@@ -27,66 +52,59 @@ const createUser = asyncHandler(async (req, res) => {
   }
 });
 
+const createAdmin = asyncHandler(async (req, res) => {
+  const { email, password, firstname, lastname, mobile } = req.body;
+
+  const findUser = await User.findOne({ email });
+
+  if (!findUser) {
+    const newUser = await User.create({
+      email,
+      password,
+      firstname,
+      lastname,
+      mobile,
+      role: 'admin'
+    });
+    const userData = await generateUserResponse(newUser);
+    setRefreshTokenCookie(res, userData.refreshToken);
+    res.json(userData);
+  } else {
+    throw new Error(`User ${firstname} ${lastname} already exists`);
+  }
+});
+
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  // check if user exists
-  const findUser = await User.findOne({ email });
-  if (findUser && (await findUser.isPasswordMatched(password))) {
-    const refreshToken = await generateRefreshToken(findUser?.id);
 
-    const _updateUser = await User.findByIdAndUpdate(
-      findUser?.id,
-      {
-        refreshToken: refreshToken
-      },
-      { new: true }
-    );
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      maxAge: 168 * 60 * 60 * 1000
-    });
-    res.json({
-      id: findUser?._id,
-      firstname: findUser?.firstname,
-      lastname: findUser?.lastname,
-      email: findUser?.email,
-      mobile: findUser?.mobile,
-      token: generateToken(findUser?._id)
-    });
-  } else {
+  // Check if user exists and password is correct
+  const findUser = await User.findOne({ email });
+  if (!findUser || !(await findUser.isPasswordMatched(password))) {
     res.status(401); // Unauthorized
     res.json({ message: 'Invalid credentials' });
+    return;
   }
+
+  // Generate user response and set refresh token cookie
+  const userData = await generateUserResponse(findUser);
+  setRefreshTokenCookie(res, userData.refreshToken);
+  res.json(userData);
 });
 
 const adminLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  // check if user exists
+
+  // Check if user exists and is an admin
   const findAdmin = await User.findOne({ email });
+  if (!findAdmin || findAdmin.role !== 'admin') {
+    throw new Error('Not Authorized');
+  }
 
-  if (findAdmin.role !== 'admin') throw new Error('Not Authorized');
-  if (findAdmin && (await findAdmin.isPasswordMatched(password))) {
-    const refreshToken = await generateRefreshToken(findAdmin?.id);
-
-    const _updateUser = await User.findByIdAndUpdate(
-      findAdmin?.id,
-      {
-        refreshToken: refreshToken
-      },
-      { new: true }
-    );
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      maxAge: 168 * 60 * 60 * 1000
-    });
-    res.json({
-      id: findAdmin?._id,
-      firstname: findAdmin?.firstname,
-      lastname: findAdmin?.lastname,
-      email: findAdmin?.email,
-      mobile: findAdmin?.mobile,
-      token: generateToken(findAdmin?._id)
-    });
+  // Check password and generate response
+  if (await findAdmin.isPasswordMatched(password)) {
+    const userData = await generateUserResponse(findAdmin);
+    setRefreshTokenCookie(res, userData.refreshToken);
+    res.json(userData);
   } else {
     throw new Error('Invalid Credentials');
   }
@@ -583,9 +601,10 @@ module.exports = {
   adminLogin,
   createOrder,
   getWishlist,
+  unblockUser,
   applyCoupon,
   getUserCart,
-  unblockUser,
+  createAdmin,
   resetPassword,
   updatePassword,
   forgotPassword,

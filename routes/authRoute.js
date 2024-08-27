@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
   createUser,
+  createAdmin,
   login,
   getUsers,
   getUser,
@@ -29,6 +30,7 @@ const {
 const { authMiddleware, admin } = require('../middlewares/authMiddleware');
 
 router.post('/register', createUser);
+router.post('/register-admin', createAdmin);
 router.post('/forgot-password', forgotPassword);
 router.put('/reset-password/:token', resetPassword);
 

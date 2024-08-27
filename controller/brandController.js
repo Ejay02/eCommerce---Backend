@@ -80,10 +80,18 @@ const getBrands = asyncHandler(async (req, res) => {
     let query = Brand.find();
 
     // Pagination
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 10;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
+    // Sorting
+    const sortField = req.query.sort || 'createdAt'; // Default sort field
+    const sortOrder = req.query.order === 'asc' ? 1 : -1; // Default sort order is descending
+
+    // Apply sorting to query
+    query = query.sort({ [sortField]: sortOrder });
+
+    // Apply pagination to query
     query = query.skip(skip).limit(limit);
 
     // Get the total count of brands

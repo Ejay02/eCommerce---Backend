@@ -4,7 +4,7 @@
   "description": "e-commerce website",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "nodemon src/index.js",
     "server": "nodemon index.js",
     "prepare": "husky || true",
     "precommit": "prettier --write . && eslint ."
@@ -35,7 +35,7 @@
     "eslint-plugin-browser": "^0.0.0",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.5",
-    "nodemon": "^3.1.3",
+    "nodemon": "^3.1.4",
     "prettier": "3.3.1"
   }
 }
