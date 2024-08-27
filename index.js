@@ -26,15 +26,22 @@ require('./controller/couponController');
 dbConnect();
 
 const corsOptions = {
-  origin: '*',
+  // origin: '*',
+  origin: [
+    'https://buyzone-demo.netlify.app',
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:5175'
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization']
 };
 
 // Middleware setup
 app.use(morgan('dev'));
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Preflight requests handling
+// app.options('*', cors(corsOptions));
 
 // Body parsers
 app.use(bodyParser.json());
