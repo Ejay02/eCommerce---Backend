@@ -21,7 +21,6 @@ const cors = require('cors');
 
 const PORT = process.env.PORT || 2000;
 
-require('./controller/couponController');
 
 dbConnect();
 
@@ -38,9 +37,10 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization']
 };
 
+
 // Middleware setup
-app.use(morgan('dev'));
 app.use(cors(corsOptions));
+app.use(morgan('dev'));
 // app.options('*', cors(corsOptions));
 
 // Body parsers
@@ -62,6 +62,8 @@ app.use('/enquiry', enquiryRoute);
 // Error handling middleware
 app.use(notFound);
 app.use(errorHandler);
+
+require('./controller/couponController');
 
 // Start server
 app.listen(PORT, () => {
