@@ -26,10 +26,12 @@ dbConnect();
 const corsOptions = {
   // origin: '*',
   origin: [
-    'https://buyzone-demo.netlify.app',
+    'http://localhost:5172',
     'http://localhost:5173',
     'http://localhost:5174',
-    'http://localhost:5175'
+    'http://localhost:5175',
+    'https://buyzone-demo.netlify.app',
+    'https://buyzone-admin-dashboard.netlify.app/',
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
