@@ -21,7 +21,6 @@ const cors = require('cors');
 
 const PORT = process.env.PORT || 2000;
 
-
 dbConnect();
 
 const corsOptions = {
@@ -36,7 +35,6 @@ const corsOptions = {
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
 };
-
 
 // Middleware setup
 app.use(cors(corsOptions));
