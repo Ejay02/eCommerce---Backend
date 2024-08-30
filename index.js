@@ -30,8 +30,9 @@ const corsOptions = {
     'http://localhost:5173',
     'http://localhost:5174',
     'http://localhost:5175',
+    'http://localhost:5176',
     'https://buyzone-demo.netlify.app',
-    'https://buyzone-admin-dashboard.netlify.app/'
+    'https://buyzone-admin-dashboard.netlify.app'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
